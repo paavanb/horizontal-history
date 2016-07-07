@@ -42,14 +42,22 @@ d3.tsv("data.tsv", type, function(error, data) {
       .append('g')
         .call(y_axis)
 
-    var bar = chart.selectAll('.bar')
+    var bars = chart.selectAll('.bar')
         .data(data)
-        .enter().append('g')
-        .attr('transform', function(d) { return `translate( ${x(d.name)} , 0)`; })
+      .enter().append('g')
+        .attr('class', 'bar')
+        .attr('transform', function(d) { return `translate( ${x(d.name)} , ${y(d.death)})`; })
 
-    bar.append('rect')
-        .attr('y', function(d) { return y(d.death); })
+    bars.append('rect')
         .attr('height', function(d) { return y(d.birth) - y(d.death); })
         .attr('width', x.bandwidth())
         .attr('fill', 'steelblue')
+
+    bars.append('text')
+        .text(function(d) { return d.name })
+        .attr('transform', 'rotate(90)')
+        .attr('dy', -x.bandwidth()/2 + 5)
+        .attr('dx', 10)
+        .attr('fill', 'white')
+        .attr('font-family', 'Helvetica')
 });
