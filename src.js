@@ -4,6 +4,10 @@ function type(d) {
   return d;
 }
 
+function nearestTen(n) {
+    return parseInt(n / 10) * 10
+}
+
 var margin = {
     top: 10,
     right: 10,
@@ -20,11 +24,12 @@ var chart = d3.select('.chart')
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 d3.tsv("data.tsv", type, function(error, data) {
+    // Get upper and lower bounds of y axis, clamped to nearest ten for prettiness
     var earliest_date = new Date(d3.min(data, function(d) { return d.birth; }).getTime());
-    earliest_date.setFullYear(earliest_date.getFullYear() - 10)
+    earliest_date.setFullYear(nearestTen(earliest_date.getFullYear() - 10))
 
     var latest_date = new Date(d3.max(data, function(d) { return d.death; }).getTime());
-    latest_date.setFullYear(latest_date.getFullYear() + 10)
+    latest_date.setFullYear(nearestTen(latest_date.getFullYear() + 10))
 
     var x = d3.scaleBand()
         .paddingOuter(0.1)
