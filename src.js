@@ -47,17 +47,20 @@ d3.tsv("data.tsv", type, function(error, data) {
       .append('g')
         .call(y_axis)
 
+    // Create groups for bars
     var bars = chart.selectAll('.bar')
         .data(data)
       .enter().append('g')
         .attr('class', 'bar')
         .attr('transform', function(d) { return `translate( ${x(d.name)} , ${y(d.death)})`; })
 
+    // Style bars
     bars.append('rect')
         .attr('height', function(d) { return y(d.birth) - y(d.death); })
         .attr('width', x.bandwidth())
         .attr('fill', 'steelblue')
 
+    // Style text on bars
     bars.append('text')
         .text(function(d) { return d.name })
         .attr('transform', 'rotate(90)')
