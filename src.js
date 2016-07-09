@@ -1,6 +1,10 @@
 function type(d) {
-  d.birth = new Date(+d.birth, 0, 1)
-  d.death = new Date(+d.death, 0, 1)
+  d.birth = new Date(d.birth)
+  if(d.death != 'PRESENT') {
+    d.death = new Date(d.death)
+  } else {
+    d.death = new Date()
+  }
   return d;
 }
 
@@ -28,8 +32,7 @@ d3.tsv("data.tsv", type, function(error, data) {
     var earliest_date = new Date(d3.min(data, function(d) { return d.birth; }).getTime());
     earliest_date.setFullYear(nearestTen(earliest_date.getFullYear() - 10))
 
-    var latest_date = new Date(d3.max(data, function(d) { return d.death; }).getTime());
-    latest_date.setFullYear(nearestTen(latest_date.getFullYear() + 10))
+    var latest_date = new Date();
 
     var y = d3.scaleBand()
         .paddingOuter(0.1)
