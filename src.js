@@ -35,7 +35,7 @@ d3.tsv("data.tsv", type, function(error, data) {
         .paddingOuter(0.1)
         .paddingInner(0.2)
         .domain(d3.map(data, function(d) { return d.name; }).keys())
-        .range([0, 100], 0.1);
+        .range([0, height], 0.1);
 
     var x = d3.scaleTime()
         .domain([earliest_date, latest_date])
