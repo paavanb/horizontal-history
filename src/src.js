@@ -12,6 +12,10 @@ function nearestTen(n) {
     return parseInt(n / 10) * 10
 }
 
+// Process the raw data, grouping non-overlapping events
+function processData(data) {
+}
+
 var margin = {
     top: 50,
     right: 10,
