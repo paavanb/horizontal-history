@@ -1,1 +1,3 @@
 *.tsv
+build/*
+node_modules/*
