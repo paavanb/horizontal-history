@@ -1,3 +1,6 @@
+groupData = require('./utils').groupData
+
+
 function type(d) {
   d.birth = new Date(d.birth)
   if(d.death != 'PRESENT') {
@@ -12,9 +15,6 @@ function nearestTen(n) {
     return parseInt(n / 10) * 10
 }
 
-// Process the raw data, grouping non-overlapping events
-function processData(data) {
-}
 
 var margin = {
     top: 50,
@@ -32,16 +32,17 @@ var chart = d3.select('.chart')
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 d3.tsv("data.tsv", type, function(error, data) {
-    // Get upper and lower bounds of x axis, clamped to nearest ten for prettiness
+    // Get lower bound of x axis, clamped to nearest ten for prettiness
     var earliest_date = new Date(d3.min(data, function(d) { return d.birth; }).getTime());
     earliest_date.setFullYear(nearestTen(earliest_date.getFullYear() - 10))
 
     var latest_date = new Date();
 
+    grouped_data = groupData(data)
     var y = d3.scaleBand()
         .paddingOuter(0.1)
         .paddingInner(0.2)
-        .domain(d3.map(data, function(d) { return d.name; }).keys())
+        .domain(_.map(grouped_data, function(d, i) { return i; }))
         .range([0, height], 0.1);
 
     var x = d3.scaleTime()
@@ -54,12 +55,22 @@ d3.tsv("data.tsv", type, function(error, data) {
       .append('g')
         .call(x_axis)
 
-    // Create groups for bars
-    var bars = chart.selectAll('.bar')
-        .data(data)
+    // Create svg groups for bars
+    var rows = chart.selectAll('.row')
+        .data(grouped_data)
+      .enter().append('g')
+        .attr('class', 'row')
+        .attr('transform', function (d, i) {
+            return `translate(0, ${y(i)})`;
+        })
+
+    var bars = rows.selectAll('.bar')
+        .data(function(d) { return d; })
       .enter().append('g')
         .attr('class', 'bar')
-        .attr('transform', function(d) { return `translate( ${x(d.birth)} , ${y(d.name)})`; })
+        .attr('transform', function(d, i) {
+            return `translate(${x(d.birth)}, 0)`;
+        })
 
     // Style bars
     bars.append('rect')
